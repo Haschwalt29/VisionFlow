@@ -90,7 +90,28 @@ Deploy the backend to Render for free hosting:
    - Render deploys automatically on git push
    - Get your API URL from Render dashboard
 
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed instructions.
+### Netlify (Frontend)
+
+Deploy the frontend to Netlify for free hosting:
+
+1. **Connect Repository**
+   - Link your GitHub repository to Netlify
+   - Set base directory to `frontend`
+
+2. **Build Configuration**
+   - Build Command: `npm run build`
+   - Publish Directory: `build`
+
+3. **Set Environment Variables**
+   ```
+   REACT_APP_API_URL=https://your-render-app.onrender.com
+   ```
+
+4. **Deploy**
+   - Netlify builds and deploys automatically
+   - Custom domain support available
+
+See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for Render details and [NETLIFY_DEPLOYMENT.md](docs/NETLIFY_DEPLOYMENT.md) for Netlify details.
 
 ## Project Structure
 
@@ -106,7 +127,8 @@ VisionFlow/
 │   │   ├── App.jsx
 │   │   ├── components/
 │   │   └── index.css
-│   └── package.json
+│   ├── package.json
+│   └── netlify.toml # Netlify deployment config
 ├── docs/            # Documentation
 ├── render.yaml      # Render deployment config
 └── README.md
