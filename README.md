@@ -4,6 +4,11 @@ AI-powered data extraction and workflow automation platform.
 
 ![Homepage](./homepage.png)
 
+## 🌐 Live Demo
+
+- **Frontend**: [https://visionflow1.netlify.app/](https://visionflow1.netlify.app/)
+- **Backend API**: [https://visionflow-he8n.onrender.com/](https://visionflow-he8n.onrender.com/)
+
 ## Features
 
 - ✨ Extract structured data from any webpage
@@ -104,7 +109,7 @@ Deploy the frontend to Netlify for free hosting:
 
 3. **Set Environment Variables**
    ```
-   REACT_APP_API_URL=https://your-render-app.onrender.com
+   REACT_APP_API_URL=https://visionflow-he8n.onrender.com
    ```
 
 4. **Deploy**
