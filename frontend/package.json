@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "VisionFlow AI Workflow Automation Agent - Frontend",
   "main": "src/index.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

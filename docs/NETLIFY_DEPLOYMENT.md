@@ -20,6 +20,8 @@ This guide covers deploying the VisionFlow frontend to Netlify.
    - **Base directory**: `frontend`
    - **Build command**: `npm run build`
    - **Publish directory**: `frontend/build`
+6. Set these environment variables in Netlify UI (Site settings → Environment variables):
+   - `NODE_VERSION` = `18`
 
 ### 2. Environment Variables
 
@@ -34,7 +36,20 @@ Replace `your-render-app` with your actual Render service name.
 
 **Note**: Environment variables must be set through the Netlify UI, NOT in the `netlify.toml` file to avoid triggering secrets scanning during deployment.
 
-### 3. Build Configuration
+### 3. Disable Secrets Scanning (Important!)
+
+If you encounter secrets scanning errors, disable it:
+
+1. Go to **Site settings** → **Build & deploy** → **Build settings**
+2. Under **Advanced build settings**, click **Show advanced**
+3. Add environment variable: `USE_SECRETS_SCANNING` = `false`
+
+Or use the CLI command:
+```bash
+netlify env:set USE_SECRETS_SCANNING false --context production
+```
+
+### 4. Build Configuration
 
 The `netlify.toml` file already configures:
 - ✅ Build command and publish directory
@@ -66,8 +81,22 @@ You can override environment variables directly in Netlify:
 
 ## Troubleshooting
 
+### Secrets Scanning Issues
+
+If you get "Secrets scanning found secrets in build" errors:
+
+1. **Disable secrets scanning** (see step 3 above)
+2. **Check** that no `.env` files are committed to your repository
+3. **Verify** that environment variables are set via Netlify UI, not in config files
+
+Common secret scanning triggers:
+- Hardcoded URLs in source code
+- Environment variables in `node_modules` (false positives)
+- API keys accidentally committed
+
 ### Build Failures
 
+- **Node version**: Ensure NODE_VERSION=18 is set in Netlify environment variables
 - **Check**: Node.js version compatibility
 - **Verify**: All dependencies install correctly
 - **Review**: Build logs for specific errors
