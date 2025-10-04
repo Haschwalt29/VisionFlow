@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta 
+      name="description" 
+      content="VisionFlow - AI Workflow Automation Agent for extracting structured data from webpages"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <title>VisionFlow - AI Workflow Automation</title>
+    
+    <!-- Custom styles -->
+    <style>
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      /* Loading animation */
+      @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      
+      .gradient-loading {
+        background: linear-gradient(-45deg, #1e293b, #334155, #475569, #64748b);
+        background-size: 400% 400%;
+        animation: gradient-shift 3s ease infinite;
+      }
+      
+      /* Ensure proper initial display */
+      #root {
+        min-height: 100vh;
+        width: 100%;
+      }
+      
+      /* Loading spinner */
+      .loader {
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-top: 2px solid #3b82f6;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <div style="text-align: center; padding: 2rem; font-family: 'Inter', sans-serif;">
+        <h1>JavaScript Required</h1>
+        <p>VisionFlow requires JavaScript to run. Please enable JavaScript in your browser.</p>
+      </div>
+    </noscript>
+    <div id="root">
+      <!-- Loading state while React initializes -->
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);">
+        <div class="loader"></div>
+        <p style="margin-top: 1rem; color: #94a3b8; font-family: 'Inter', sans-serif;">Loading VisionFlow...</p>
+      </div>
+    </div>
+    
+    <script>
+      // Set environment variables for development
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        window.REACT_APP_API_URL = 'http://localhost:5000';
+      }
+    </script>
+  </body>
+</html>
