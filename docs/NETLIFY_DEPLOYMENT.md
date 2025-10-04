@@ -32,6 +32,8 @@ Set the backend API URL in Netlify:
 
 Replace `your-render-app` with your actual Render service name.
 
+**Note**: Environment variables must be set through the Netlify UI, NOT in the `netlify.toml` file to avoid triggering secrets scanning during deployment.
+
 ### 3. Build Configuration
 
 The `netlify.toml` file already configures:
