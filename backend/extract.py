@@ -1,26 +1,20 @@
-"""
-Data extraction logic using OpenAI GPT-4
-"""
-import openai
 import requests
 from bs4 import BeautifulSoup
 import json
 import os
 from dotenv import load_dotenv
-
-load_dotenv()  # Load environment variables from .env file
-
-# Initialize Google AI client (Gemini)
 import google.generativeai as genai
+
+load_dotenv()
+
 api_key = os.getenv('GOOGLE_AI_API_KEY')
 if api_key:
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-flash-latest')  # Use latest flash model for free tier
+    model = genai.GenerativeModel('gemini-flash-latest')
 else:
     model = None
 
 def fetch_webpage_content(url):
-    """Fetch and parse webpage content"""
     try:
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -36,18 +30,15 @@ def fetch_webpage_content(url):
         
         soup = BeautifulSoup(response.content, 'html.parser')
         
-        # Remove script and style elements
         for script in soup(["script", "style", "nav", "footer", "header"]):
             script.decompose()
         
-        # Get text content
         text_content = soup.get_text()
         
-        # Clean up text
         lines = (line.strip() for line in text_content.splitlines())
         text_content = ' '.join(line for line in lines if line)
         
-        return text_content[:8000]  # Limit content to avoid token limits
+        return text_content[:8000]
         
     except requests.exceptions.ConnectionError as e:
         raise Exception(f"Network connection failed. Unable to reach the website. This might be due to DNS issues or network connectivity problems. Error: {str(e)}")
@@ -59,7 +50,6 @@ def fetch_webpage_content(url):
         raise Exception(f"Unexpected error while fetching webpage: {str(e)}")
 
 def extract_data_with_gemini(content):
-    """Extract structured data using Gemini"""
     try:
         if not model:
             raise Exception("Google AI API key not configured. Please set GOOGLE_AI_API_KEY environment variable.")
@@ -94,9 +84,7 @@ def extract_data_with_gemini(content):
         
         extracted_text = response.text.strip()
         
-        # Try to parse JSON from response
         try:
-            # Remove any markdown formatting if present
             if extracted_text.startswith('```json'):
                 extracted_text = extracted_text[7:]
             if extracted_text.endswith('```'):
@@ -106,7 +94,6 @@ def extract_data_with_gemini(content):
             return extracted_data
             
         except json.JSONDecodeError:
-            # If JSON parsing fails, try to extract JSON-like structure
             import re
             json_match = re.search(r'\{.*\}', extracted_text, re.DOTALL)
             if json_match:
@@ -115,7 +102,6 @@ def extract_data_with_gemini(content):
                 except:
                     pass
             
-            # Fallback: return a default structure
             return {
                 "name": "Unknown",
                 "description": extracted_text[:200] + "..." if len(extracted_text) > 200 else extracted_text,
@@ -127,24 +113,19 @@ def extract_data_with_gemini(content):
         raise Exception(f"Gemini extraction failed: {str(e)}")
 
 def process_url(url):
-    """Main function to process a URL and extract data"""
     try:
-        # Fetch webpage content
         content = fetch_webpage_content(url)
         
         if not content:
             return {"error": "No content found on webpage"}
         
-        # Extract data using Gemini
         extracted_data = extract_data_with_gemini(content)
         
-        # Ensure all required fields exist
         required_fields = ['name', 'description', 'features', 'pricing']
         for field in required_fields:
             if field not in extracted_data:
                 extracted_data[field] = "Not available"
         
-        # Convert features to string if it's a list
         if isinstance(extracted_data.get('features'), list):
             extracted_data['features'] = ', '.join(extracted_data['features'])
         

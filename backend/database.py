@@ -1,6 +1,3 @@
-"""
-Database setup and management for VisionFlow
-"""
 import sqlite3
 import datetime
 from flask import g
@@ -8,7 +5,6 @@ from flask import g
 DATABASE = 'extractions.db'
 
 def get_db():
-    """Get database connection"""
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
@@ -16,7 +12,6 @@ def get_db():
     return db
 
 def init_db():
-    """Initialize the database with required tables"""
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     
@@ -39,7 +34,6 @@ def init_db():
     print("Database initialized successfully!")
 
 def add_extraction(url, extracted_data, raw_html="", status="success"):
-    """Add a new extraction to the database"""
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     
@@ -62,7 +56,6 @@ def add_extraction(url, extracted_data, raw_html="", status="success"):
     return extraction_id
 
 def get_recent_extractions(limit=50):
-    """Get recent extractions from the database"""
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     
@@ -88,7 +81,6 @@ def get_recent_extractions(limit=50):
     } for row in extractions]
 
 def close_connection(exception):
-    """Close database connection"""
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()

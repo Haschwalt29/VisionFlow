@@ -17,16 +17,18 @@ function App() {
 
   // Fetch data on component mount
   useEffect(() => {
-    fetchData();
+    fetchData(true); // Initial load with spinner
     
-    // Set up polling for real-time updates
-    const interval = setInterval(fetchData, 5000);
+    // Set up polling for real-time updates (silent updates)
+    const interval = setInterval(() => fetchData(false), 8000);
     return () => clearInterval(interval);
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (showLoading = false) => {
     try {
-      setIsLoadingData(true);
+      if (showLoading) {
+        setIsLoadingData(true);
+      }
       const response = await axios.get('/data');
       if (response.data.success) {
         setExtractions(response.data.data);
@@ -34,7 +36,9 @@ function App() {
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setIsLoadingData(false);
+      if (showLoading) {
+        setIsLoadingData(false);
+      }
     }
   };
 
@@ -48,8 +52,8 @@ function App() {
       
       if (response.data.success) {
         setSuccessMessage(`Successfully extracted data from ${new URL(url).hostname}`);
-        // Refresh data after successful extraction
-        await fetchData();
+        // Refresh data after successful extraction (silent)
+        await fetchData(false);
       } else {
         setError(response.data.error || 'Extraction failed');
       }
@@ -169,12 +173,6 @@ function App() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
               <span>Built with Flask + React</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <span>Powered by GPT-4</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

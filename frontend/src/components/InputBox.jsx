@@ -87,7 +87,7 @@ const InputBox = ({ onSubmit, isLoading }) => {
         </div>
         <div className="text-sm">
           <div className="font-semibold text-blue-400">🖥️ Smart</div>
-          <div className="text-gray-500">Gemini powered</div>
+          <div className="text-gray-500">Smart AI</div>
         </div>
         <div className="text-sm">
           <div className="font-semibold text-purple-400">📦 JSON</div>

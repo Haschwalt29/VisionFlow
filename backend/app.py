@@ -1,7 +1,3 @@
-"""
-VisionFlow Flask Backend
-AI Workflow Automation Agent - Data Extraction API
-"""
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
@@ -9,23 +5,20 @@ from dotenv import load_dotenv
 from database import init_db, add_extraction, get_recent_extractions, close_connection
 from extract import process_url
 
-load_dotenv()  # Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for frontend integration
+CORS(app)
 
-# Initialize database
 init_db()
 
 @app.teardown_appcontext
 def close_db(error):
-    """Close database connection when app context is torn down"""
     from flask import g
     close_connection(error)
 
 @app.route('/', methods=['get'])
 def health_check():
-    """Health check endpoint"""
     return jsonify({
         "status": "healthy",
         "service": "VisionFlow API",
@@ -34,7 +27,6 @@ def health_check():
 
 @app.route('/extract', methods=['POST'])
 def extract_data():
-    """Extract structured data from a webpage URL"""
     try:
         data = request.get_json()
         
@@ -46,19 +38,16 @@ def extract_data():
         
         url = data['url'].strip()
         
-        # Basic URL validation
         if not url.startswith(('http://', 'https://')):
             url = 'https://' + url
         
-        # Process the URL
         result = process_url(url)
         
         if result['success']:
-            # Store in database
             extraction_id = add_extraction(
                 url=url,
                 extracted_data=result['data'],
-                raw_html="",  # We're not storing raw HTML to save space
+                raw_html="",
                 status="success"
             )
             
@@ -70,7 +59,6 @@ def extract_data():
                 "message": "Data extracted successfully"
             })
         else:
-            # Store failed extraction
             add_extraction(
                 url=url,
                 extracted_data={},
@@ -91,7 +79,6 @@ def extract_data():
 
 @app.route('/data', methods=['GET'])
 def get_data():
-    """Get recent extractions from database"""
     try:
         limit = request.args.get('limit', 50, type=int)
         extractions = get_recent_extractions(limit)
@@ -110,7 +97,6 @@ def get_data():
 
 @app.route('/extractions/<int:extraction_id>', methods=['GET'])
 def get_extraction(extraction_id):
-    """Get a specific extraction by ID"""
     try:
         from database import get_db
         
@@ -162,7 +148,6 @@ def internal_error(error):
     return jsonify({"success": False, "error": "Internal server error"}), 500
 
 if __name__ == '__main__':
-    # Check if Google AI API key is set
     if not os.getenv('GOOGLE_AI_API_KEY'):
         print("⚠️  WARNING: GOOGLE_AI_API_KEY not found in environment variables")
         print("Please create a .env file and add your Google AI API key:")

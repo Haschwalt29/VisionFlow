@@ -1,6 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-const DataTable = ({ extractions, isLoading }) => {
+const DataTable = React.memo(({ extractions, isLoading }) => {
+  // Memoize formatted extractions to prevent unnecessary re-renders
+  const formattedExtractions = useMemo(() => {
+    if (!extractions || extractions.length === 0) return [];
+    return extractions.map(extraction => ({
+      ...extraction,
+      formattedDate: new Date(extraction.extracted_at),
+    }));
+  }, [extractions]);
+
   if (isLoading) {
     return (
       <div className="glass rounded-2xl p-8 shadow-xl">
@@ -37,7 +46,7 @@ const DataTable = ({ extractions, isLoading }) => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-white mb-2">Extracted Data</h2>
-          <p className="text-gray-400">{extractions.length} extraction{extractions.length !== 1 ? 's' : ''}</p>
+          <p className="text-gray-400">{formattedExtractions.length} extraction{formattedExtractions.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="flex items-center space-x-2 text-sm text-gray-400">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -58,7 +67,7 @@ const DataTable = ({ extractions, isLoading }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-600/30">
-            {extractions.map((extraction, index) => (
+            {formattedExtractions.map((extraction, index) => (
               <tr key={extraction.id || index} className="hover:bg-gray-700/30 transition-all duration-200 group">
                 <td className="py-8 pr-6 align-top">
                   <div className="font-semibold text-white text-base leading-6">
@@ -112,10 +121,10 @@ const DataTable = ({ extractions, isLoading }) => {
                 </td>
                 <td className="py-8 pr-6 align-top">
                   <div className="text-sm text-gray-300 font-medium">
-                    {new Date(extraction.extracted_at).toLocaleDateString()}
+                    {extraction.formattedDate.toLocaleDateString()}
                   </div>
                   <div className="text-xs text-gray-500 mt-1">
-                    {new Date(extraction.extracted_at).toLocaleTimeString()}
+                    {extraction.formattedDate.toLocaleTimeString()}
                   </div>
                 </td>
               </tr>
@@ -127,16 +136,12 @@ const DataTable = ({ extractions, isLoading }) => {
       <div className="mt-6 flex items-center justify-between text-sm text-gray-500">
         <div className="flex items-center space-x-4">
           <span>
-            <span className="font-medium text-gray-400">{extractions.length}</span> total extractions
+            <span className="font-medium text-gray-400">{formattedExtractions.length}</span> total extractions
           </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
-          <span>Powered by Gemini AI</span>
         </div>
       </div>
     </div>
   );
-};
+});
 
 export default DataTable;
