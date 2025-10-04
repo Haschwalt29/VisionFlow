@@ -5,7 +5,20 @@ import DataTable from './components/DataTable';
 import './index.css';
 
 // Configure axios base URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE_URL = (() => {
+  // For production builds, use environment variable (set via Netlify)
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
+  }
+  
+  // For development, default to localhost
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5000';
+  }
+  
+  // Default fallback for production
+  return 'https://visionflow-backend.onrender.com';
+})();
 axios.defaults.baseURL = API_BASE_URL;
 
 function App() {

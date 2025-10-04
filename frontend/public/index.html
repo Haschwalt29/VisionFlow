@@ -80,9 +80,12 @@
     </div>
     
     <script>
-      // Set environment variables for development
+      // Development environment detection
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        window.REACT_APP_API_URL = 'http://localhost:5000';
+        // Only set API URL for local development when not already set
+        if (!window.location.href.includes('netlify') && !window.location.href.includes('render')) {
+          window.devClient = true;
+        }
       }
     </script>
   </body>
