@@ -30,7 +30,6 @@ cd VisionFlow
 
 2. **Backend setup**
 ```bash
-cd backend
 pip install -r requirements.txt
 ```
 
@@ -67,24 +66,50 @@ npm start
 
 Visit `http://localhost:3000`
 
+## Deployment
+
+### Render (Recommended)
+
+Deploy the backend to Render for free hosting:
+
+1. **Connect Repository**
+   - Link your GitHub repository to Render
+   - Select the VisionFlow repository
+
+2. **Create Web Service**
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `gunicorn -w 4 -b 0.0.0.0:$PORT wsgi:app`
+
+3. **Set Environment Variables**
+   ```
+   GOOGLE_AI_API_KEY=your_google_ai_api_key_here
+   FLASK_ENV=production
+   ```
+
+4. **Auto-Deploy**
+   - Render deploys automatically on git push
+   - Get your API URL from Render dashboard
+
+See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed instructions.
+
 ## Project Structure
 
 ```
 VisionFlow/
-├── backend/           # Flask API
-│   ├── app.py        # Main application
-│   ├── extract.py    # Data extraction logic
-│   ├── database.py   # Database operations
-│   └── requirements.txt
+├── app.py           # Main Flask application
+├── extract.py       # Data extraction logic
+├── database.py      # Database operations
+├── wsgi.py         # WSGI entry point
+├── requirements.txt # Python dependencies
 ├── frontend/         # React application
 │   ├── src/
 │   │   ├── App.jsx
 │   │   ├── components/
 │   │   └── index.css
 │   └── package.json
-├── scripts/          # Utility scripts
 ├── docs/            # Documentation
-└── config/          # Configuration files
+├── render.yaml      # Render deployment config
+└── README.md
 ```
 
 ## API Endpoints

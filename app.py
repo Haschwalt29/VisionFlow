@@ -150,11 +150,9 @@ def internal_error(error):
 if __name__ == '__main__':
     if not os.getenv('GOOGLE_AI_API_KEY'):
         print("⚠️  WARNING: GOOGLE_AI_API_KEY not found in environment variables")
-        print("Please create a .env file and add your Google AI API key:")
-        print("GOOGLE_AI_API_KEY=your_google_ai_api_key_here")
     
     port = int(os.environ.get('PORT', 5000))
-    debug = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+    debug = os.environ.get('FLASK_ENV', 'production') != 'production'
     
     print(f"🚀 Starting VisionFlow API on port {port}")
     print(f"📊 Database initialized")
