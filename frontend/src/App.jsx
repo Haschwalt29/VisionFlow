@@ -20,6 +20,8 @@ const API_BASE_URL = (() => {
   return 'https://visionflow-backend.onrender.com';
 })();
 axios.defaults.baseURL = API_BASE_URL;
+// Set a sane default timeout so the UI doesn't hang forever on network issues
+axios.defaults.timeout = 30000; // 30 seconds to tolerate cold starts
 
 function App() {
   const [extractions, setExtractions] = useState([]);
@@ -30,7 +32,29 @@ function App() {
 
   // Fetch data on component mount
   useEffect(() => {
-    fetchData(true); // Initial load with spinner
+    // Initial load with retries to tolerate backend cold starts
+    const fetchWithRetry = async () => {
+      const maxAttempts = 3;
+      let attempt = 0;
+      let lastError = null;
+      while (attempt < maxAttempts) {
+        try {
+          await fetchData(true);
+          lastError = null;
+          break;
+        } catch (err) {
+          lastError = err;
+          const backoffMs = 1000 * Math.pow(2, attempt); // 1s, 2s, 4s
+          await new Promise(r => setTimeout(r, backoffMs));
+        }
+        attempt += 1;
+      }
+      if (lastError) {
+        // Ensure loading stops if all retries failed
+        setIsLoadingData(false);
+      }
+    };
+    fetchWithRetry();
     
     // Set up polling for real-time updates (silent updates)
     const interval = setInterval(() => fetchData(false), 8000);
@@ -45,9 +69,19 @@ function App() {
       const response = await axios.get('/data');
       if (response.data.success) {
         setExtractions(response.data.data);
+        // Clear any previous error if data loads successfully
+        setError(null);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+      // Surface the error to the user and stop the loading spinner
+      const message =
+        error.code === 'ECONNABORTED'
+          ? 'Request timed out while loading data. Please check the backend.'
+          : (error.response?.data?.error || error.message || 'Failed to load data');
+      setError(message);
+      // Re-throw so caller (retry wrapper) can handle it
+      throw error;
     } finally {
       if (showLoading) {
         setIsLoadingData(false);
