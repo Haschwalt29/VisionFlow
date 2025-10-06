@@ -2,7 +2,7 @@
 
 AI-powered data extraction and workflow automation platform.
 
-![Homepage](./homepage.png)
+![Homepage](./Homepage.png)
 
 ## 🌐 Live Demo
 
