@@ -21,7 +21,7 @@ const API_BASE_URL = (() => {
 })();
 axios.defaults.baseURL = API_BASE_URL;
 // Set a sane default timeout so the UI doesn't hang forever on network issues
-axios.defaults.timeout = 30000; // 30 seconds to tolerate cold starts
+axios.defaults.timeout = 60000; // 60 seconds to better tolerate cold starts on free hosting
 
 function App() {
   const [extractions, setExtractions] = useState([]);
@@ -77,7 +77,7 @@ function App() {
       // Surface the error to the user and stop the loading spinner
       const message =
         error.code === 'ECONNABORTED'
-          ? 'Request timed out while loading data. Please check the backend.'
+          ? 'Request timed out. The backend may be cold-starting; please try again in a moment.'
           : (error.response?.data?.error || error.message || 'Failed to load data');
       setError(message);
       // Re-throw so caller (retry wrapper) can handle it
